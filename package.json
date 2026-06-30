@@ -1,0 +1,20 @@
+{
+  "name": "signetix-native-sign",
+  "version": "0.2.1",
+  "description": "Standalone Ed25519 signer for Signetix native-key flows. Recomputes the partial-tx hash locally from the served manifest + header and refuses to sign on mismatch — verification lives here, not on the web tier.",
+  "private": true,
+  "type": "module",
+  "bin": {
+    "signetix-sign": "./sign.mjs"
+  },
+  "files": [
+    "sign.mjs",
+    "README.md"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "@steleaio/radix-engine-toolkit": "2.0.0-dev.5"
+  }
+}
