@@ -71,6 +71,22 @@ curl -O https://raw.githubusercontent.com/Shadaffy/signetix-native-sign/main/pac
 npm install
 ```
 
+## Sign in (login challenge — zero deps)
+
+The `/sign-in/native` page gives you a ready-made command of this shape:
+
+```bash
+node sign.mjs --auth --challenge <hex> --address <account> --pubkey <hex> <hash-hex>
+```
+
+The script recomputes the login hash locally —
+`Blake2b-256("SIGNETIX-NATIVE-V1\0" || challenge || vlen(addr) || addr || vlen(pk) || pk)`
+— and refuses to sign if it doesn't match the hash the page displayed.
+Because that hash is domain-separated by the `SIGNETIX-NATIVE-V1` label,
+a login signature can never double as a transaction signature: it proves
+control of your key, nothing more. No `npm install` needed for this mode
+(Blake2b is implemented inline).
+
 ## Sign (verified — recommended)
 
 Save the sign-payload JSON the page shows you to a file and run:
@@ -147,12 +163,12 @@ NATIVE_PRIVKEY_HEX=<...> node sign.mjs --payload payload.json
 
 ## Exit codes
 
-| Code | Meaning                                              |
-|------|------------------------------------------------------|
-| `0`  | Signed successfully                                  |
-| `1`  | Argument / input error                               |
-| `2`  | Manifest didn't compile against the V2 toolkit       |
-| `3`  | Hash mismatch — refused to sign                      |
+| Code | Meaning                                                        |
+|------|----------------------------------------------------------------|
+| `0`  | Signed successfully                                            |
+| `1`  | Argument / input error (incl. auth-mode private-key mismatch)  |
+| `2`  | Manifest didn't compile against the V2 toolkit                 |
+| `3`  | Hash mismatch — refused to sign                                |
 
 ## Reproducing the test fixture
 

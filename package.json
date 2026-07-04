@@ -1,6 +1,6 @@
 {
   "name": "signetix-native-sign",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "description": "Standalone Ed25519 signer for Signetix native-key flows. Recomputes the partial-tx hash locally from the served manifest + header and refuses to sign on mismatch — verification lives here, not on the web tier.",
   "private": true,
   "type": "module",
