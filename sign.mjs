@@ -22,8 +22,10 @@
  * your key in the browser. This script runs locally and prints only the
  * signature.
  *
- * Requirements: Node 18+ (Windows, macOS, Linux). One small dep installed
- * via `npm install` — see README for the no-clone install path.
+ * Requirements: Node 18+ (Windows, macOS, Linux). Hash-only signing (the
+ * sign-in flow) has zero dependencies. Verified mode (`--payload`) needs the
+ * Radix Engine Toolkit installed via `npm install` — see README for the
+ * no-clone install path.
  *
  * Usage — verified (recommended):
  *   node sign.mjs --payload payload.json
@@ -42,8 +44,6 @@
 import crypto from 'node:crypto';
 import readline from 'node:readline';
 import { readFileSync } from 'node:fs';
-
-import { RadixEngineToolkit, Convert } from '@steleaio/radix-engine-toolkit';
 
 const HEX = /^[0-9a-fA-F]+$/;
 
@@ -185,6 +185,19 @@ if (!HEX.test(hashHex) || hashHex.length !== 64) {
 // ─── Verification — recompute the subintent hash locally ──────────────────────
 
 if (mode === 'verified') {
+  // The toolkit is only needed to recompute the hash, so hash-only signing
+  // (e.g. the /sign-in/native auth challenge) stays zero-deps.
+  let RadixEngineToolkit, Convert;
+  try {
+    ({ RadixEngineToolkit, Convert } = await import('@steleaio/radix-engine-toolkit'));
+  } catch {
+    console.error('\n  ✗ The Radix Engine Toolkit is not installed.');
+    console.error('    Verified mode recomputes the partial-tx hash locally and needs it.');
+    console.error('    In the directory containing sign.mjs, download the package.json from');
+    console.error('    https://github.com/Shadaffy/signetix-native-sign and run: npm install\n');
+    process.exit(1);
+  }
+
   process.stderr.write('\nVerifying served hash against locally-recomputed hash …\n');
   let recomputed;
   try {

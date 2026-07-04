@@ -38,10 +38,11 @@ read every line of it.
 ## Requirements
 
 - **Node 18 or newer** ([nodejs.org](https://nodejs.org))
-- **One npm install** — for the Radix Engine Toolkit, which the script
-  uses to recompute the partial-tx hash. We dropped the previous
-  "zero-deps" stance because real verification is worth one
-  `npm install` step.
+- **One npm install — but only for verified mode.** The Radix Engine
+  Toolkit is needed to recompute the partial-tx hash from a `--payload`
+  blob. Hash-only signing (the `/sign-in/native` auth challenge and the
+  legacy blind mode) uses just the Node stdlib: download `sign.mjs` and
+  run it, no install required.
 
 ## Install (once)
 
