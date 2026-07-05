@@ -56,6 +56,11 @@ import { readFileSync } from 'node:fs';
 
 const HEX = /^[0-9a-fA-F]+$/;
 
+// Windows PowerShell 5.1's `Out-File -Encoding utf8` prepends a UTF-8 BOM
+// (U+FEFF), which JSON.parse rejects and which would silently change a
+// manifest's hash. Strip it from everything we read off disk.
+const stripBom = (s) => (s.charCodeAt(0) === 0xfeff ? s.slice(1) : s);
+
 // ─── Arg parsing ──────────────────────────────────────────────────────────────
 
 function usage(msg) {
@@ -120,7 +125,7 @@ function loadPayload() {
       raw = process.env.SIGNETIX_PAYLOAD;
     }
     let json;
-    try { json = JSON.parse(raw); }
+    try { json = JSON.parse(stripBom(raw)); }
     catch (e) { usage(`payload is not valid JSON: ${e.message}`); }
 
     const hash = (json.intent_hash_hex ?? json.intentHashHex ?? '').toLowerCase();
@@ -164,9 +169,9 @@ function loadPayload() {
     if (!args.header) usage('--header is required when --manifest is provided');
     if (args.positional.length === 0) usage('hash-hex positional arg is required');
     let manifest, headerRaw;
-    try { manifest = readFileSync(args.manifest, 'utf8'); }
+    try { manifest = stripBom(readFileSync(args.manifest, 'utf8')); }
     catch (e) { usage(`could not read --manifest file: ${e.message}`); }
-    try { headerRaw = JSON.parse(readFileSync(args.header, 'utf8')); }
+    try { headerRaw = JSON.parse(stripBom(readFileSync(args.header, 'utf8'))); }
     catch (e) { usage(`could not read --header file: ${e.message}`); }
     const header = normaliseHeader(headerRaw);
     if (!header) usage('--header file does not contain a valid subintent header');
