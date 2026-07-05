@@ -37,14 +37,32 @@ read every line of it.
 
 ## Requirements
 
-- **Node 18 or newer** ([nodejs.org](https://nodejs.org))
-- **One npm install — but only for verified mode.** The Radix Engine
-  Toolkit is needed to recompute the partial-tx hash from a `--payload`
-  blob. Hash-only signing (the `/sign-in/native` auth challenge and the
-  legacy blind mode) uses just the Node stdlib: download `sign.mjs` and
-  run it, no install required.
+- **Node 18 or newer** ([nodejs.org](https://nodejs.org)) — that's it
+  for the recommended `npx` path below.
+- Hash-only signing (the `/sign-in/native` auth challenge and the legacy
+  blind mode) needs no dependencies at all: download `sign.mjs` and run
+  it with plain `node`.
 
-## Install (once)
+## Quick start (recommended — nothing to install)
+
+`npx` fetches the signer and its dependency straight from this repo.
+The first run takes ~30 s to download; afterwards it's cached:
+
+```bash
+npx --yes github:Shadaffy/signetix-native-sign --payload payload.json
+```
+
+This is the command the Signetix web UI's copy-paste snippets use. To
+pin an exact release instead of `main`:
+
+```bash
+npx --yes github:Shadaffy/signetix-native-sign#v0.2.4 --payload payload.json
+```
+
+## Manual install (alternative — offline / audit-first use)
+
+If you'd rather download the script once, read it, and run it directly
+with `node sign.mjs`:
 
 ### Windows (PowerShell)
 
@@ -92,6 +110,8 @@ control of your key, nothing more. No `npm install` needed for this mode
 Save the sign-payload JSON the page shows you to a file and run:
 
 ```bash
+npx --yes github:Shadaffy/signetix-native-sign --payload payload.json
+# or, with a manual install:
 node sign.mjs --payload payload.json
 ```
 
